@@ -35,6 +35,14 @@ func NewParser(bufSize int) *Parser {
 	return &p
 }
 
+// Reset resets all values in parser
+func (p *Parser) Reset() {
+	p.readCounter = 0
+	p.stackLoop = make([]uint16, 0)
+	p.program = make([]Instruction, 0)
+	p.cmds = makeDefaultCommands()
+}
+
 // Parse tries to convert each command into its instruction
 func (p *Parser) Parse(reader io.Reader) (err error) {
 	if reader == nil {
