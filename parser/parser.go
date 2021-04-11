@@ -27,11 +27,10 @@ type Parser struct {
 func NewParser(bufSize int) *Parser {
 	var p Parser
 	p.bufSize = bufSize
-	p.cmds = make(map[rune]cmd.Command, 4)
-	p.cmds['+'] = cmd.NewCommand("Inc", cmd.Value, func(val uint16) uint16 { return val + 1 })
-	p.cmds['-'] = cmd.NewCommand("Dec", cmd.Value, func(val uint16) uint16 { return val - 1 })
-	p.cmds['>'] = cmd.NewCommand("Right", cmd.Pointer, func(val uint16) uint16 { return val + 1 })
-	p.cmds['<'] = cmd.NewCommand("Left", cmd.Pointer, func(val uint16) uint16 { return val - 1 })
+	p.stackLoop = make([]uint16, 0)
+	p.program = make([]Instruction, 0)
+	p.cmds = makeDefaultCommands()
+	p.readCounter = 0
 
 	return &p
 }
@@ -149,4 +148,14 @@ func (p *Parser) parse(symbol rune) error {
 	p.readCounter++
 
 	return nil
+}
+
+func makeDefaultCommands() map[rune]cmd.Command {
+	cmds := make(map[rune]cmd.Command, 4)
+	cmds['+'] = cmd.NewCommand("Inc", cmd.Value, func(val uint16) uint16 { return val + 1 })
+	cmds['-'] = cmd.NewCommand("Dec", cmd.Value, func(val uint16) uint16 { return val - 1 })
+	cmds['>'] = cmd.NewCommand("Right", cmd.Pointer, func(val uint16) uint16 { return val + 1 })
+	cmds['<'] = cmd.NewCommand("Left", cmd.Pointer, func(val uint16) uint16 { return val - 1 })
+
+	return cmds
 }
