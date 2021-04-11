@@ -1,8 +1,10 @@
 package parser
 
 import (
-	"brainfuck/cmd"
+	"strings"
 	"testing"
+
+	"brainfuck/cmd"
 )
 
 func TestDefaultParser(t *testing.T) {
@@ -80,5 +82,56 @@ func TestAddRemoveCommand(t *testing.T) {
 	_, ok := parser.Command('t')
 	if ok {
 		t.Error("deleted command should be remove from parser")
+	}
+}
+
+func TestPanic(t *testing.T) {
+	parser := NewParser(10)
+	defer func() { recover() }()
+	parser.Parse(nil)
+	t.Error("nil reader must be paniced")
+}
+
+func TestParser(t *testing.T) {
+	reader := strings.NewReader("+++>[[+-]")
+	parser := NewParser(10)
+	err := parser.Parse(reader)
+	if err == nil {
+		t.Error("invalid loop in unacceptable")
+	}
+
+	parser.Reset()
+	reader = strings.NewReader("")
+	err = parser.Parse(reader)
+	if err != nil {
+		t.Error("empty string is not invalid", err)
+	}
+
+	parser.Reset()
+	reader = strings.NewReader("s;ldkfjsd;lkfj")
+	err = parser.Parse(reader)
+	if err != nil {
+		t.Error("there is no command", err)
+	}
+
+	parser.Reset()
+	reader = strings.NewReader("s;ldkfjsd;lkfj]")
+	err = parser.Parse(reader)
+	if err == nil {
+		t.Error("there is an invlaid loop char")
+	}
+
+	parser.Reset()
+	reader = strings.NewReader("++[]")
+	err = parser.Parse(reader)
+	if err != nil {
+		t.Error("string is valid", err)
+	}
+
+	parser.Reset()
+	reader = strings.NewReader(">>[[[-]]]")
+	err = parser.Parse(reader)
+	if err != nil {
+		t.Error("neasted loop is valid", err)
 	}
 }
