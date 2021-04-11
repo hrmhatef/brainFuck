@@ -73,10 +73,14 @@ func (p *Parser) Command(s rune) (c cmd.Command, ok bool) {
 	return
 }
 
-//TODO check remove and add func for invalid rune
 // AddCommand inserts a new command into command list
-func (p *Parser) AddCommand(symbol rune, cmd cmd.Command) {
+func (p *Parser) AddCommand(symbol rune, cmd cmd.Command) (err error) {
+	_, ok := p.cmds[symbol]
+	if ok {
+		return errors.New("commad is already exist")
+	}
 	p.cmds[symbol] = cmd
+	return
 }
 
 // RemoveCommand removes a command with its symbol
