@@ -1,6 +1,9 @@
 package parser
 
-import "testing"
+import (
+	"brainfuck/cmd"
+	"testing"
+)
 
 func TestDefaultParser(t *testing.T) {
 	parser := NewParser(10)
@@ -52,5 +55,30 @@ func TestDefaultParser(t *testing.T) {
 	p := parser.Program()
 	if len(p) != 0 {
 		t.Error("invalid default value for array program")
+	}
+}
+
+func TestAddRemoveCommand(t *testing.T) {
+	parser := NewParser(10)
+
+	method := func(uint16) uint16 {
+		return 1
+	}
+
+	c := cmd.NewCommand("c", cmd.Value, method)
+	err := parser.AddCommand('+', c)
+	if err == nil {
+		t.Error("there is no way to add duplicate command")
+	}
+
+	err = parser.AddCommand('t', c)
+	if err != nil {
+		t.Error("the valid command should be inserted in parser")
+	}
+
+	parser.RemoveCommand('t')
+	_, ok := parser.Command('t')
+	if ok {
+		t.Error("deleted command should be remove from parser")
 	}
 }
