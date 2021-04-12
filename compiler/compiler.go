@@ -50,22 +50,22 @@ func (c *Compiler) Execute(parser *parser.Parser) (err error) {
 		}
 
 		switch p[c.executeCounter].Operator {
-		case '.':
+		case consts.Dot:
 			err = c.output(byte(c.data[c.dataPtr]))
 			if err != nil {
 				return err
 			}
-		case ',':
+		case consts.Comma:
 			d, err := c.input()
 			if err != nil && err != io.EOF {
 				return err
 			}
 			c.data[c.dataPtr] = d
-		case '[':
+		case consts.Start:
 			if c.data[c.dataPtr] == 0 {
 				c.executeCounter = p[c.executeCounter].Operand
 			}
-		case ']':
+		case consts.End:
 			// make sure to ignore empty loop, like ++[]
 			if c.data[c.dataPtr] > 0 && c.executeCounter-p[c.executeCounter].Operand > 1 {
 				c.executeCounter = p[c.executeCounter].Operand
