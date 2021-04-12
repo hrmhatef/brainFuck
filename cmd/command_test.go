@@ -16,7 +16,7 @@ func TestCommand(t *testing.T) {
 		t.Error("the type of command should be value")
 	}
 
-	if one.Exe(2) != 3 {
+	if one.Exec(2) != 3 {
 		t.Error("the execution of func addOne is invalid")
 	}
 
@@ -29,7 +29,7 @@ func TestCommand(t *testing.T) {
 		t.Error("the type of command should be pointer")
 	}
 
-	if power.Exe(2) != 4 {
+	if power.Exec(2) != 4 {
 		t.Error("the execution of func power is invalid")
 	}
 }

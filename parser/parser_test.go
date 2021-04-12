@@ -14,7 +14,7 @@ func TestDefaultParser(t *testing.T) {
 	if !ok {
 		t.Error("unable to find default command 'Inc' in parser")
 	}
-	if c.Exe(1) != 2 {
+	if c.Exec(1) != 2 {
 		t.Error("invalid result for command 'Inc'")
 	}
 	if !c.IsValue() {
@@ -25,7 +25,7 @@ func TestDefaultParser(t *testing.T) {
 	if !ok {
 		t.Error("unable to find default command 'Dec' in parser")
 	}
-	if c.Exe(1) != 0 {
+	if c.Exec(1) != 0 {
 		t.Error("invalid result for command 'Dec'")
 	}
 	if !c.IsValue() {
@@ -36,7 +36,7 @@ func TestDefaultParser(t *testing.T) {
 	if !ok {
 		t.Error("unable to find default command 'Right' in parser")
 	}
-	if c.Exe(1) != 2 {
+	if c.Exec(1) != 2 {
 		t.Error("invalid result for command 'Right'")
 	}
 	if !c.IsPointer() {
@@ -47,7 +47,7 @@ func TestDefaultParser(t *testing.T) {
 	if !ok {
 		t.Error("unable to find default command 'Left' in parser")
 	}
-	if c.Exe(1) != 0 {
+	if c.Exec(1) != 0 {
 		t.Error("invalid result for command 'Left'")
 	}
 	if !c.IsPointer() {

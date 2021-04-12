@@ -75,9 +75,9 @@ func (c *Compiler) Execute(parser *parser.Parser) (err error) {
 			cmd, ok := parser.Command(s)
 			if ok {
 				if cmd.IsValue() {
-					c.data[c.dataPtr] = int16(cmd.Exe(uint16(c.data[c.dataPtr])))
+					c.data[c.dataPtr] = int16(cmd.Exec(uint16(c.data[c.dataPtr])))
 				} else if cmd.IsPointer() {
-					c.dataPtr = cmd.Exe(c.dataPtr)
+					c.dataPtr = cmd.Exec(c.dataPtr)
 				}
 			} else {
 				panic(fmt.Sprintf("Unknown operator: {%s}", string(s)))

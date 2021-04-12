@@ -33,7 +33,7 @@ func (c *Command) IsPointer() bool {
 }
 
 // Exec executes the method of the command
-func (c *Command) Exe(in uint16) uint16 {
+func (c *Command) Exec(in uint16) uint16 {
 	return c.method(in)
 }
 
