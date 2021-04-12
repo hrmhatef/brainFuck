@@ -1,10 +1,9 @@
 package parser
 
 import (
-	"errors"
-	"fmt"
 	"io"
 
+	"brainfuck/bfError"
 	"brainfuck/cmd"
 )
 
@@ -46,7 +45,7 @@ func (p *Parser) Reset() {
 // Parse tries to convert each command into its instruction
 func (p *Parser) Parse(reader io.Reader) (err error) {
 	if reader == nil {
-		panic("Bad initialize...")
+		panic(bfError.InvalidArgument)
 	}
 
 	for {
@@ -63,7 +62,7 @@ func (p *Parser) Parse(reader io.Reader) (err error) {
 			if err == io.EOF && len(p.stackLoop) == 0 {
 				return nil
 			} else {
-				return errors.New(fmt.Sprintf("Invalid loop order %s", err))
+				return bfError.InvalidLoop
 			}
 		}
 	}
@@ -84,7 +83,7 @@ func (p *Parser) Command(s rune) (c cmd.Command, ok bool) {
 func (p *Parser) AddCommand(symbol rune, cmd cmd.Command) (err error) {
 	_, ok := p.cmds[symbol]
 	if ok {
-		return errors.New("commad is already exist")
+		return bfError.DuplicateCommand
 	}
 	p.cmds[symbol] = cmd
 	return
@@ -102,7 +101,7 @@ func (p *Parser) startLoop(symbol rune) {
 
 func (p *Parser) endLoop(symbol rune) error {
 	if len(p.stackLoop) == 0 {
-		return errors.New("Invalid loop char")
+		return bfError.InvalidLoop
 	}
 
 	jump := p.stackLoop[len(p.stackLoop)-1]
