@@ -13,3 +13,5 @@ test:
 
 clean:
 	rm bin/brainFuck
+
+all: clean test app
