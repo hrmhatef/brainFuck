@@ -34,7 +34,7 @@ func main() {
 	p := parser.NewParser(100)
 	r := bufio.NewReader(os.Stdin)
 	w := writer{}
-	c := compiler.NewCompiler(30000, r, w)
+	c := compiler.NewCompiler(r, w)
 	power := cmd.NewCommand("power", cmd.Value, func(val uint16) uint16 { return val * val })
 	p.AddCommand('p', power)
 	enter := cmd.NewCommand("enter", cmd.Value, func(uint16) uint16 { return 10 })

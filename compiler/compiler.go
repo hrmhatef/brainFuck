@@ -8,6 +8,12 @@ import (
 	"brainfuck/parser"
 )
 
+const maxDataSize = 30000
+
+// DataSize denotes the memory size of compiler, it uses for memory limitation,
+// zero means maxDataSize limit
+var DataSize uint16 = 0
+
 // Compiler denotes the compiler type in BrainFuck
 type Compiler struct {
 	reader         io.Reader
@@ -15,18 +21,16 @@ type Compiler struct {
 	executeCounter uint16
 	data           []int16
 	dataPtr        uint16
-	dataSize       uint16
 }
 
 // NewCompiler returns a new compiler based on dataSize
-func NewCompiler(dataSize uint16, r io.Reader, w io.Writer) *Compiler {
+func NewCompiler(r io.Reader, w io.Writer) *Compiler {
 	if r == nil || w == nil {
 		panic(consts.InvalidArgument)
 	}
 
 	var c Compiler
-	c.dataSize = dataSize
-	c.data = make([]int16, c.dataSize)
+	c.data = make([]int16, maxDataSize)
 	c.executeCounter = 0
 	c.dataPtr = 0
 	c.reader = r
@@ -39,13 +43,16 @@ func NewCompiler(dataSize uint16, r io.Reader, w io.Writer) *Compiler {
 func (c *Compiler) Reset() {
 	c.executeCounter = 0
 	c.dataPtr = 0
+	DataSize = 0
 }
 
 // Execute runs the program of parser
 func (c *Compiler) Execute(parser *parser.Parser) (err error) {
 	p := parser.Program()
 	for c.executeCounter < uint16(len(p)) {
-		if c.dataPtr >= c.dataSize {
+		if c.dataPtr >= DataSize && (DataSize > 0 && DataSize <= maxDataSize) {
+			return consts.InvalidMemory
+		} else if c.dataPtr >= maxDataSize {
 			return consts.InvalidMemory
 		}
 
