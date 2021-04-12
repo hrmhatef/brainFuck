@@ -135,11 +135,11 @@ func readString(reader io.Reader, bf int) (str string, err error) {
 
 func (p *Parser) parse(symbol rune) error {
 	switch symbol {
-	case '.', ',':
+	case consts.Dot, consts.Comma:
 		p.program = append(p.program, Instruction{symbol, 0})
-	case '[':
+	case consts.Start:
 		p.startLoop(symbol)
-	case ']':
+	case consts.End:
 		err := p.endLoop(symbol)
 		if err != nil {
 			return err
@@ -159,10 +159,10 @@ func (p *Parser) parse(symbol rune) error {
 
 func makeDefaultCommands() map[rune]cmd.Command {
 	cmds := make(map[rune]cmd.Command, 4)
-	cmds['+'] = cmd.NewCommand("Inc", cmd.Value, func(val uint16) uint16 { return val + 1 })
-	cmds['-'] = cmd.NewCommand("Dec", cmd.Value, func(val uint16) uint16 { return val - 1 })
-	cmds['>'] = cmd.NewCommand("Right", cmd.Pointer, func(val uint16) uint16 { return val + 1 })
-	cmds['<'] = cmd.NewCommand("Left", cmd.Pointer, func(val uint16) uint16 { return val - 1 })
+	cmds[consts.Plus] = cmd.NewCommand("Inc", cmd.Value, func(val uint16) uint16 { return val + 1 })
+	cmds[consts.Dash] = cmd.NewCommand("Dec", cmd.Value, func(val uint16) uint16 { return val - 1 })
+	cmds[consts.Right] = cmd.NewCommand("Right", cmd.Pointer, func(val uint16) uint16 { return val + 1 })
+	cmds[consts.Left] = cmd.NewCommand("Left", cmd.Pointer, func(val uint16) uint16 { return val - 1 })
 
 	return cmds
 }
