@@ -10,7 +10,7 @@ import (
 
 func TestNewCompilerPanic(t *testing.T) {
 	defer func() { recover() }()
-	_ = NewCompiler(10, nil, nil)
+	_ = NewCompiler(nil, nil)
 	t.Error("nil reader must be paniced")
 }
 
@@ -27,7 +27,8 @@ func TestNewCompiler(t *testing.T) {
 	r := strings.NewReader("2")
 	w := writer{}
 
-	com := NewCompiler(2, r, &w)
+	com := NewCompiler(r, &w)
+	DataSize = 2
 	reader := strings.NewReader(">>>")
 	p := parser.NewParser(10)
 	err := p.Parse(reader)
@@ -39,6 +40,18 @@ func TestNewCompiler(t *testing.T) {
 		t.Error("compile error for out of memory")
 	}
 
+	com.Reset()
+	reader = strings.NewReader(">>>>>>>>>>>>")
+	p = parser.NewParser(10)
+	err = p.Parse(reader)
+	if err != nil {
+		t.Error("string of parser is valid", err)
+	}
+	err = com.Execute(p)
+	if err != nil {
+		t.Error("default value for data size is 30000")
+	}
+
 	// add command power and test with a sample code of BrainFuck
 	p.Reset()
 	power := func(val uint16) uint16 {
@@ -46,7 +59,7 @@ func TestNewCompiler(t *testing.T) {
 	}
 	c := cmd.NewCommand("c1", cmd.Value, power)
 	p.AddCommand('^', c)
-	com = NewCompiler(10, r, &w)
+	com = NewCompiler(r, &w)
 	reader = strings.NewReader(`
 +++ +++
 >
