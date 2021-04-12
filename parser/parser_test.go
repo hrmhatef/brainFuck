@@ -1,10 +1,12 @@
 package parser
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
 	"brainfuck/cmd"
+	"brainfuck/consts"
 )
 
 func TestDefaultParser(t *testing.T) {
@@ -82,6 +84,22 @@ func TestAddRemoveCommand(t *testing.T) {
 	_, ok := parser.Command('t')
 	if ok {
 		t.Error("deleted command should be remove from parser")
+	}
+
+	chars := make([]rune, 4)
+	chars[0] = consts.Dot
+	chars[1] = consts.Comma
+	chars[2] = consts.Start
+	chars[3] = consts.End
+	for _, v := range chars {
+		err = parser.AddCommand(v, c)
+		if err == nil {
+			t.Error(fmt.Sprintf("add symbol {%c} is unacceptable", v))
+		}
+		err = parser.RemoveCommand(v)
+		if err == nil {
+			t.Error(fmt.Sprintf("remove symbol {%c} is unacceptable", v))
+		}
 	}
 }
 
