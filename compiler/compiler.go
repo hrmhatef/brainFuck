@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"brainfuck/bfError"
+	"brainfuck/consts"
 	"brainfuck/parser"
 )
 
@@ -21,7 +21,7 @@ type Compiler struct {
 // NewCompiler returns a new compiler based on dataSize
 func NewCompiler(dataSize uint16, r io.Reader, w io.Writer) *Compiler {
 	if r == nil || w == nil {
-		panic(bfError.InvalidArgument)
+		panic(consts.InvalidArgument)
 	}
 
 	var c Compiler
@@ -46,7 +46,7 @@ func (c *Compiler) Execute(parser *parser.Parser) (err error) {
 	p := parser.Program()
 	for c.executeCounter < uint16(len(p)) {
 		if c.dataPtr >= c.dataSize {
-			return bfError.InvalidMemory
+			return consts.InvalidMemory
 		}
 
 		switch p[c.executeCounter].Operator {
@@ -80,7 +80,7 @@ func (c *Compiler) Execute(parser *parser.Parser) (err error) {
 					c.dataPtr = cmd.Exec(c.dataPtr)
 				}
 			} else {
-				panic(fmt.Sprintf("%s {%s}", bfError.InvalidOperator, string(s)))
+				panic(fmt.Sprintf("%s {%s}", consts.InvalidOperator, string(s)))
 			}
 		}
 		c.executeCounter++
