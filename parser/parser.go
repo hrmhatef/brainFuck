@@ -81,6 +81,9 @@ func (p *Parser) Command(s rune) (c cmd.Command, ok bool) {
 
 // AddCommand inserts a new command into command list
 func (p *Parser) AddCommand(symbol rune, cmd cmd.Command) (err error) {
+	if !isEditable(symbol) {
+		return consts.InvalidSymbol
+	}
 	_, ok := p.cmds[symbol]
 	if ok {
 		return consts.DuplicateCommand
@@ -90,8 +93,24 @@ func (p *Parser) AddCommand(symbol rune, cmd cmd.Command) (err error) {
 }
 
 // RemoveCommand removes a command with its symbol
-func (p *Parser) RemoveCommand(symbol rune) {
+func (p *Parser) RemoveCommand(symbol rune) (err error) {
+	if !isEditable(symbol) {
+		return consts.InvalidSymbol
+	}
+
 	delete(p.cmds, symbol)
+	return
+}
+
+func isEditable(s rune) (ok bool) {
+	if s == consts.Start ||
+		s == consts.End ||
+		s == consts.Dot ||
+		s == consts.Comma {
+		return false
+	}
+
+	return true
 }
 
 func (p *Parser) startLoop(symbol rune) {
